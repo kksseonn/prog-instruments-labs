@@ -19,7 +19,7 @@ def threshold_processing(x: float) -> int:
 
 def psnr(original: np.ndarray, compressed: np.ndarray) -> float:
     """
-    Calculates the Peak Signal-to-Noise Ratio (PSNR) between 
+    Calculates the Peak Signal-to-Noise Ratio (PSNR) between
     the original and compressed images.
     """
     mse = np.mean((original - compressed) ** 2)
@@ -34,8 +34,7 @@ def psnr_1(c: np.ndarray, cw: np.ndarray) -> float:
     """
     Calculates the PSNR using a different formula.
     """
-    return 10 * np.log10(np.power(255, 2) /
-                          np.mean(np.power((c - cw), 2)))
+    return 10 * np.log10(np.power(255, 2) / np.mean(np.power((c - cw), 2)))
 
 
 def auto_selection(image: Image.Image) -> tuple:
@@ -68,7 +67,7 @@ def auto_selection(image: Image.Image) -> tuple:
         reverse_array = save_reverse_array.copy()
         reverse_spectre_array = np.fft.fft2(reverse_array)
         reverse_abs_spectre = abs(reverse_spectre_array /
-                                   np.exp(phase_array * 1j))
+                                  np.exp(phase_array * 1j))
         included_cvz = (reverse_abs_spectre[128:384, 128:384] -
                         abs_spectre[128:384, 128:384]) / alpha
         flatten_cvz = CVZ.flatten()
@@ -158,7 +157,7 @@ reverse_spectre_array = np.fft.fft2(reverse_array)
 reverse_abs_spectre = abs(reverse_spectre_array /
                           np.exp(phase_array * 1j))
 included_cvz = (reverse_abs_spectre[128:384, 128:384] -
-                 abs_spectre[128:384, 128:384]) / alpha1
+                abs_spectre[128:384, 128:384]) / alpha1
 flatten_cvz = CVZ.flatten()
 flatten_included_cvz = included_cvz.flatten()
 p = sum(flatten_cvz * flatten_included_cvz) / (
@@ -180,7 +179,7 @@ def cut(replacement_proportion: float) -> float:
     """
     reverse_array[0:int(replacement_proportion * len(reverse_array)),
                   0:int(replacement_proportion * len(reverse_array))] = (
-        image_array[0:int(replacement_proportion * len(image_array)):, 
+        image_array[0:int(replacement_proportion * len(image_array)):,
                     0:int(replacement_proportion * len(image_array))])
     reverse_spectre_array = np.fft.fft2(reverse_array)
     reverse_abs_spectre = abs(reverse_spectre_array /
