@@ -15,6 +15,9 @@ CVZ = np.random.normal(0, 1, size=[256, 256])
 
 
 def threshold_processing(x):
+    """
+    Processes the input value with a threshold.
+    """
     if x > 0.1:
         x = 1
     else:
@@ -23,6 +26,10 @@ def threshold_processing(x):
 
 
 def psnr(original, compressed):
+    """
+    Calculates the Peak Signal-to-Noise Ratio (PSNR) between 
+    the original and compressed images.
+    """
     mse = np.mean((original - compressed) ** 2)
     if mse == 0:
         return 100
@@ -32,11 +39,17 @@ def psnr(original, compressed):
 
 
 def psnr_1(c, cw):
+    """
+    Calculates the PSNR using a different formula.
+    """
     return 10 * np.log10(np.power(255, 2) /
                          np.mean(np.power((c - cw), 2)))
 
 
 def auto_selection(image):
+    """
+    Automatically selects the best alpha value for image processing.
+    """
     psnr_value = 0
     best_alpha = 0
     best_p = 0
@@ -86,6 +99,9 @@ def auto_selection(image):
 
 
 def generate_false_detection_cvz(count):
+    """
+    Generates false detection CVZs.
+    """
     false_detection_cvz = []
     for i in range(count):
         false_detection_cvz.append(np.random.normal(0, 1, size=[65536]))
@@ -93,12 +109,18 @@ def generate_false_detection_cvz(count):
 
 
 def proximity_function(first_cvz, second_cvz):
+    """
+    Calculates the proximity measure between two CVZs.
+    """
     return sum(first_cvz * second_cvz) / (
         ((sum(first_cvz ** 2)) ** (1 / 2)) *
         ((sum(second_cvz ** 2)) ** (1 / 2)))
 
 
 def false_detection(false_detection_cvz, cvz):
+    """
+    Calculates the proximity measures for false detections.
+    """
     false_detection_proximity_array = []
     for false_cvz in false_detection_cvz:
         false_detection_proximity_array.append(
@@ -161,6 +183,9 @@ print(auto_selection(image))
 
 
 def cut(replacement_proportion):
+    """
+    Replaces a portion of the reverse image with the original image.
+    """
     reverse_array[0:int(replacement_proportion * len(reverse_array)),
                   0:int(replacement_proportion * len(reverse_array))] = (
         image_array[0:int(replacement_proportion * len(image_array)):,
@@ -186,6 +211,9 @@ for cut_param in cut_param_array:
 
 
 def rotation(rotation_angle):
+    """
+    Rotates the reverse image by a specified angle and calculates the proximity measure.
+    """
     rotated_image = reverse_image.rotate(rotation_angle)
     rotated_image_array = np.asarray(rotated_image)
     spectre_array = np.fft.fft2(rotated_image_array)
@@ -212,6 +240,9 @@ for rotation_param in rotation_param_array:
 
 
 def smooth(m):
+    """
+    Applies a smoothing filter to the reverse image and calculates the proximity measure.
+    """
     window = np.full((m, m), 1) / (m * m)
 
     smooth_array = convolve2d(reverse_image, window,
@@ -240,6 +271,9 @@ for smooth_param in smooth_param_array:
 
 
 def jpeg(qf):
+    """
+    Compresses the reverse image using JPEG compression and calculates the proximity measure.
+    """
     rgb_reverse_image = reverse_image.convert("RGB")
     rgb_reverse_image.save("JPEG_image.jpg", quality=qf)
 
