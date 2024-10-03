@@ -1,12 +1,14 @@
-import cv2
-import numpy as np
-from PIL import Image
-from cmath import phase
+import os
 import math
+from math import log10, sqrt
+from cmath import phase
+
+import numpy as np
+import cv2
+from PIL import Image
 from matplotlib import pyplot as plt
 from scipy.signal import convolve2d
-import os
-from math import log10, sqrt
+
 
 def threshold_processing(x):
     if x > 0.1:
@@ -118,7 +120,7 @@ plt.ylabel("Y axis")
 plt.plot(x, y, color="red")
 plt.show()
 
-image = Image.open("bridge.tif")
+image = Image.open("lab_1/bridge.tif")
 
 # print(auto_selection(image))
 
