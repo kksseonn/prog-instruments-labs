@@ -20,8 +20,7 @@ def threshold_processing(x):
 
 def psnr(original, compressed):
     mse = np.mean((original - compressed) ** 2)
-    if mse == 0:  # MSE is zero means no noise is present in the signal.
-        # Therefore PSNR have no importance.
+    if mse == 0:
         return 100
     max_pixel = 255.0
     psnr_value = 20 * log10(max_pixel / sqrt(mse))
@@ -48,21 +47,12 @@ def auto_selection(image):
         changed_abs_spectre[128:384, 128:384] += alpha * CVZ
         changed_spectre = changed_abs_spectre * np.exp(phase_array * 1j)
 
-        # test_abs = abs(changed_spectre / np.exp(phase_array*1j))
-        # test_cvz = (test_abs[128:384, 128:384] - abs_spectre1[128:384, 128:384]) / alpha
-        # spectre_image = Image.fromarray(spectre_array)
-
         reverse_array = abs(np.fft.ifft2(changed_spectre))
 
         reverse_image = Image.fromarray(reverse_array)
         reverse_image.convert("RGB").save("img_with_cvz.png")
         new_image = Image.open("img_with_cvz.png").convert("L")
-        # image.show()
-        # new_image.show()
         reverse_array = np.asarray(new_image)
-
-        # print(psnr_1(image_array, reverse_array))
-        # print(cv2.PSNR(image_array, reverse_array))
 
         save_reverse_array = reverse_array
         reverse_array = save_reverse_array.copy()
@@ -77,7 +67,6 @@ def auto_selection(image):
         included_cvz_estimation = threshold_processing(p)
         if included_cvz_estimation:
             reverse_array = np.asarray(reverse_array)
-            # print(cv2.PSNR(image_array, reverse_array))
             new_psnr = psnr_1(image_array, reverse_array)
             if new_psnr > psnr_value:
                 psnr_value = new_psnr
@@ -123,11 +112,6 @@ plt.show()
 
 image = Image.open("lab_1/bridge.tif")
 
-# print(auto_selection(image))
-
-
-
-# image.show()
 image_array = np.asarray(image)
 
 spectre_array = np.fft.fft2(image_array)
@@ -139,21 +123,12 @@ changed_abs_spectre = abs_spectre
 changed_abs_spectre[128:384, 128:384] += alpha1 * CVZ
 changed_spectre = changed_abs_spectre * np.exp(phase_array * 1j)
 
-# test_abs = abs(changed_spectre / np.exp(phase_array*1j))
-# test_cvz = (test_abs[128:384, 128:384] - abs_spectre1[128:384, 128:384]) / alpha
-# spectre_image = Image.fromarray(spectre_array)
-
 reverse_array = abs(np.fft.ifft2(changed_spectre))
 
 reverse_image = Image.fromarray(reverse_array)
 reverse_image.convert("RGB").save("img_with_cvz.png")
 new_image = Image.open("img_with_cvz.png").convert("L")
-# image.show()
-# new_image.show()
 reverse_array = np.asarray(new_image)
-
-# print(psnr_1(image_array, reverse_array))
-# print(cv2.PSNR(image_array, reverse_array))
 
 save_reverse_array = reverse_array
 reverse_array = save_reverse_array.copy()
@@ -170,9 +145,9 @@ print(p)
 print(included_cvz_estimation)
 
 reverse_image = Image.fromarray(reverse_array)
-# reverse_image.show()
 
 print(auto_selection(image))
+
 
 def cut(replacement_proportion):
     reverse_array[0:int(replacement_proportion * len(reverse_array)), 0:int(replacement_proportion * len(reverse_array))] = image_array[
@@ -186,27 +161,18 @@ def cut(replacement_proportion):
     p = sum(flatten_cvz * flatten_cut_cvz) / (
             ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_cut_cvz ** 2)) ** (1 / 2)))
 
-    # included_cvz_estimation = threshold_processing(p)
-    # print(f"CUT {replacement_proportion}")
-    # print(p)
-    # print(included_cvz_estimation)
-
-    # cut_image = Image.fromarray(reverse_array)
-    # cut_image.show()
-
     return p
 
 
 # CUT
-
 cut_param_array = np.arange(0.55, 1.45, 0.15)
 cut_p = []
 for cut_param in cut_param_array:
     cut_p.append(cut(cut_param))
 
+
 def rotation(rotation_angle):
     rotated_image = reverse_image.rotate(rotation_angle)
-    # rotated_image.show()
     rotated_image_array = np.asarray(rotated_image)
     spectre_array = np.fft.fft2(rotated_image_array)
 
@@ -219,15 +185,9 @@ def rotation(rotation_angle):
     p = sum(flatten_cvz * flatten_rotated_cvz) / (
             ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_rotated_cvz ** 2)) ** (1 / 2)))
 
-    # included_cvz_estimation = threshold_processing(p)
-    # print(f"ROTATION {rotation_angle}")
-    # print(p)
-    # print(included_cvz_estimation)
-
     return p
 
 
-# ROTATION
 rotation_param_array = np.arange(1, 90, 8.9)
 rotation_p = []
 for rotation_param in rotation_param_array:
@@ -238,8 +198,6 @@ def smooth(m):
     window = np.full((m, m), 1) / (m * m)
 
     smooth_array = convolve2d(reverse_image, window, boundary="symm", mode="same")
-    # smooth_image.show()
-
     spectre_array = np.fft.fft2(smooth_array)
 
     reverse_array = abs(np.fft.ifft2(spectre_array))
@@ -251,16 +209,8 @@ def smooth(m):
     p = sum(flatten_cvz * flatten_smoothed_cvz) / (
             ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_smoothed_cvz ** 2)) ** (1 / 2)))
 
-    # included_cvz_estimation = threshold_processing(p)
-    # print(f"SMOOTH {M}")
-    # print(p)
-    # print(included_cvz_estimation)
-
     return p
 
-
-# SMOOTH
-# window = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]]) / 9
 
 smooth_param_array = np.arange(3, 15, 2)
 smooth_p = []
@@ -273,7 +223,6 @@ def jpeg(qf):
     rgb_reverse_image.save("JPEG_image.jpg", quality=qf)
 
     jpeg_image = Image.open("JPEG_image.jpg").convert("L")
-    # JPEG_image.show()
 
     jpeg_array = np.asarray(jpeg_image)
 
@@ -287,22 +236,15 @@ def jpeg(qf):
     flatten_jpeg_cvz = rotated_cvz.flatten()
     p = sum(flatten_cvz * flatten_jpeg_cvz) / (
             ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_jpeg_cvz ** 2)) ** (1 / 2)))
-    # included_cvz_estimation = threshold_processing(p)
-    # print(f"JPEG {qf}")
-    # print(p)
-    # print(included_cvz_estimation)
 
     return p
 
-
-# JPEG
 
 jpeg_param_array = np.arange(30, 91, 10)
 jpeg_p = []
 for jpeg_param in jpeg_param_array:
     jpeg_p.append(jpeg(int(jpeg_param)))
 
-# OUTPUT
 
 x = cut_param_array
 y = cut_p
