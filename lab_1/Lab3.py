@@ -203,7 +203,8 @@ for cut_param in cut_param_array:
 
 def rotation(rotation_angle: float) -> float:
     """
-    Rotates the reverse image by a specified angle and calculates the proximity measure.
+    Rotates the reverse image by a specified angle and calculates the
+    proximity measure.
     """
     rotated_image = reverse_image.rotate(rotation_angle)
     rotated_image_array = np.asarray(rotated_image)
@@ -232,7 +233,8 @@ for rotation_param in rotation_param_array:
 
 def smooth(m: int) -> float:
     """
-    Applies a smoothing filter to the reverse image and calculates the proximity measure.
+    Applies a smoothing filter to the reverse image and calculates
+    the proximity measure.
     """
     window = np.full((m, m), 1) / (m * m)
 
@@ -263,7 +265,8 @@ for smooth_param in smooth_param_array:
 
 def jpeg(qf: int) -> float:
     """
-    Compresses the reverse image using JPEG compression and calculates the proximity measure.
+    Compresses the reverse image using JPEG compression and calculates
+    the proximity measure.
     """
     rgb_reverse_image = reverse_image.convert("RGB")
     rgb_reverse_image.save("JPEG_image.jpg", quality=qf)
