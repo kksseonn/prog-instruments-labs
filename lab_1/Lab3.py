@@ -28,7 +28,8 @@ def psnr(original, compressed):
 
 
 def psnr_1(c, cw):
-    return 10 * np.log10(np.power(255, 2) / np.mean(np.power((c - cw), 2)))
+    return 10 * np.log10(np.power(255, 2) / 
+                         np.mean(np.power((c - cw), 2)))
 
 
 def auto_selection(image):
@@ -57,12 +58,15 @@ def auto_selection(image):
         save_reverse_array = reverse_array
         reverse_array = save_reverse_array.copy()
         reverse_spectre_array = np.fft.fft2(reverse_array)
-        reverse_abs_spectre = abs(reverse_spectre_array / np.exp(phase_array * 1j))
-        included_cvz = (reverse_abs_spectre[128:384, 128:384] - abs_spectre[128:384, 128:384]) / alpha
+        reverse_abs_spectre = abs(reverse_spectre_array / 
+                                  np.exp(phase_array * 1j))
+        included_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+                        abs_spectre[128:384, 128:384]) / alpha
         flatten_cvz = CVZ.flatten()
         flatten_included_cvz = included_cvz.flatten()
         p = sum(flatten_cvz * flatten_included_cvz) / (
-                ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_included_cvz ** 2)) ** (1 / 2)))
+            ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+            ((sum(flatten_included_cvz ** 2)) ** (1 / 2)))
 
         included_cvz_estimation = threshold_processing(p)
         if included_cvz_estimation:
@@ -86,13 +90,15 @@ def generate_false_detection_cvz(count):
 
 def proximity_function(first_cvz, second_cvz):
     return sum(first_cvz * second_cvz) / (
-            ((sum(first_cvz ** 2)) ** (1 / 2)) * ((sum(second_cvz ** 2)) ** (1 / 2)))
+        ((sum(first_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(second_cvz ** 2)) ** (1 / 2)))
 
 
 def false_detection(false_detection_cvz, cvz):
     false_detection_proximity_array = []
     for false_cvz in false_detection_cvz:
-        false_detection_proximity_array.append(proximity_function(cvz, false_cvz))
+        false_detection_proximity_array.append(
+            proximity_function(cvz, false_cvz))
     return false_detection_proximity_array
 
 
@@ -101,7 +107,8 @@ CVZ = np.random.normal(0, 1, size=[256, 256])
 
 flatten_CVZ = CVZ.flatten()
 false_detection_cvz = generate_false_detection_cvz(100)
-false_detection_proximity_array = false_detection(false_detection_cvz, CVZ.flatten())
+false_detection_proximity_array = false_detection(
+    false_detection_cvz, CVZ.flatten())
 
 x = np.arange(0, 100, 1)
 y = false_detection_proximity_array
@@ -133,12 +140,15 @@ reverse_array = np.asarray(new_image)
 save_reverse_array = reverse_array
 reverse_array = save_reverse_array.copy()
 reverse_spectre_array = np.fft.fft2(reverse_array)
-reverse_abs_spectre = abs(reverse_spectre_array / np.exp(phase_array * 1j))
-included_cvz = (reverse_abs_spectre[128:384, 128:384] - abs_spectre[128:384, 128:384]) / alpha1
+reverse_abs_spectre = abs(reverse_spectre_array / 
+                          np.exp(phase_array * 1j))
+included_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+                 abs_spectre[128:384, 128:384]) / alpha1
 flatten_cvz = CVZ.flatten()
 flatten_included_cvz = included_cvz.flatten()
 p = sum(flatten_cvz * flatten_included_cvz) / (
-        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_included_cvz ** 2)) ** (1 / 2)))
+    ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+    ((sum(flatten_included_cvz ** 2)) ** (1 / 2)))
 
 included_cvz_estimation = threshold_processing(p)
 print(p)
@@ -150,21 +160,24 @@ print(auto_selection(image))
 
 
 def cut(replacement_proportion):
-    reverse_array[0:int(replacement_proportion * len(reverse_array)), 0:int(replacement_proportion * len(reverse_array))] = image_array[
-                                                                                              0:int(replacement_proportion * len(image_array)):,
-                                                                                              0:int(replacement_proportion * len(image_array))]
+    reverse_array[0:int(replacement_proportion * len(reverse_array)), 
+                  0:int(replacement_proportion * len(reverse_array))] = (
+        image_array[0:int(replacement_proportion * len(image_array)):,
+                    0:int(replacement_proportion * len(image_array))])
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / np.exp(phase_array * 1j))
-    cut_cvz = (reverse_abs_spectre[128:384, 128:384] - abs_spectre[128:384, 128:384]) / alpha1
+    reverse_abs_spectre = abs(reverse_spectre_array / 
+                              np.exp(phase_array * 1j))
+    cut_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+               abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_cut_cvz = cut_cvz.flatten()
     p = sum(flatten_cvz * flatten_cut_cvz) / (
-            ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_cut_cvz ** 2)) ** (1 / 2)))
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_cut_cvz ** 2)) ** (1 / 2)))
 
     return p
 
 
-# CUT
 cut_param_array = np.arange(0.55, 1.45, 0.15)
 cut_p = []
 for cut_param in cut_param_array:
@@ -178,12 +191,15 @@ def rotation(rotation_angle):
 
     reverse_array = abs(np.fft.ifft2(spectre_array))
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / np.exp(phase_array * 1j))
-    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - abs_spectre[128:384, 128:384]) / alpha1
+    reverse_abs_spectre = abs(reverse_spectre_array / 
+                              np.exp(phase_array * 1j))
+    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+                   abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_rotated_cvz = rotated_cvz.flatten()
     p = sum(flatten_cvz * flatten_rotated_cvz) / (
-            ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_rotated_cvz ** 2)) ** (1 / 2)))
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_rotated_cvz ** 2)) ** (1 / 2)))
 
     return p
 
@@ -197,17 +213,21 @@ for rotation_param in rotation_param_array:
 def smooth(m):
     window = np.full((m, m), 1) / (m * m)
 
-    smooth_array = convolve2d(reverse_image, window, boundary="symm", mode="same")
+    smooth_array = convolve2d(reverse_image, window, 
+                              boundary="symm", mode="same")
     spectre_array = np.fft.fft2(smooth_array)
 
     reverse_array = abs(np.fft.ifft2(spectre_array))
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / np.exp(phase_array * 1j))
-    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - abs_spectre[128:384, 128:384]) / alpha1
+    reverse_abs_spectre = abs(reverse_spectre_array / 
+                              np.exp(phase_array * 1j))
+    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+                   abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_smoothed_cvz = rotated_cvz.flatten()
     p = sum(flatten_cvz * flatten_smoothed_cvz) / (
-            ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_smoothed_cvz ** 2)) ** (1 / 2)))
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_smoothed_cvz ** 2)) ** (1 / 2)))
 
     return p
 
@@ -230,12 +250,15 @@ def jpeg(qf):
 
     reverse_array = abs(np.fft.ifft2(spectre_array))
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / np.exp(phase_array * 1j))
-    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - abs_spectre[128:384, 128:384]) / alpha1
+    reverse_abs_spectre = abs(reverse_spectre_array / 
+                              np.exp(phase_array * 1j))
+    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+                   abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_jpeg_cvz = rotated_cvz.flatten()
     p = sum(flatten_cvz * flatten_jpeg_cvz) / (
-            ((sum(flatten_cvz ** 2)) ** (1 / 2)) * ((sum(flatten_jpeg_cvz ** 2)) ** (1 / 2)))
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_jpeg_cvz ** 2)) ** (1 / 2)))
 
     return p
 
