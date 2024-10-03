@@ -28,7 +28,7 @@ def psnr(original, compressed):
 
 
 def psnr_1(c, cw):
-    return 10 * np.log10(np.power(255, 2) / 
+    return 10 * np.log10(np.power(255, 2) /
                          np.mean(np.power((c - cw), 2)))
 
 
@@ -58,14 +58,14 @@ def auto_selection(image):
         save_reverse_array = reverse_array
         reverse_array = save_reverse_array.copy()
         reverse_spectre_array = np.fft.fft2(reverse_array)
-        reverse_abs_spectre = abs(reverse_spectre_array / 
+        reverse_abs_spectre = abs(reverse_spectre_array /
                                   np.exp(phase_array * 1j))
-        included_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+        included_cvz = (reverse_abs_spectre[128:384, 128:384] -
                         abs_spectre[128:384, 128:384]) / alpha
         flatten_cvz = CVZ.flatten()
         flatten_included_cvz = included_cvz.flatten()
         p = sum(flatten_cvz * flatten_included_cvz) / (
-            ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+            ((sum(flatten_cvz ** 2)) ** (1 / 2)) *
             ((sum(flatten_included_cvz ** 2)) ** (1 / 2)))
 
         included_cvz_estimation = threshold_processing(p)
@@ -90,7 +90,7 @@ def generate_false_detection_cvz(count):
 
 def proximity_function(first_cvz, second_cvz):
     return sum(first_cvz * second_cvz) / (
-        ((sum(first_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(first_cvz ** 2)) ** (1 / 2)) *
         ((sum(second_cvz ** 2)) ** (1 / 2)))
 
 
@@ -140,14 +140,14 @@ reverse_array = np.asarray(new_image)
 save_reverse_array = reverse_array
 reverse_array = save_reverse_array.copy()
 reverse_spectre_array = np.fft.fft2(reverse_array)
-reverse_abs_spectre = abs(reverse_spectre_array / 
+reverse_abs_spectre = abs(reverse_spectre_array /
                           np.exp(phase_array * 1j))
-included_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+included_cvz = (reverse_abs_spectre[128:384, 128:384] -
                  abs_spectre[128:384, 128:384]) / alpha1
 flatten_cvz = CVZ.flatten()
 flatten_included_cvz = included_cvz.flatten()
 p = sum(flatten_cvz * flatten_included_cvz) / (
-    ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+    ((sum(flatten_cvz ** 2)) ** (1 / 2)) *
     ((sum(flatten_included_cvz ** 2)) ** (1 / 2)))
 
 included_cvz_estimation = threshold_processing(p)
@@ -160,19 +160,19 @@ print(auto_selection(image))
 
 
 def cut(replacement_proportion):
-    reverse_array[0:int(replacement_proportion * len(reverse_array)), 
+    reverse_array[0:int(replacement_proportion * len(reverse_array)),
                   0:int(replacement_proportion * len(reverse_array))] = (
         image_array[0:int(replacement_proportion * len(image_array)):,
                     0:int(replacement_proportion * len(image_array))])
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / 
+    reverse_abs_spectre = abs(reverse_spectre_array /
                               np.exp(phase_array * 1j))
-    cut_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+    cut_cvz = (reverse_abs_spectre[128:384, 128:384] -
                abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_cut_cvz = cut_cvz.flatten()
     p = sum(flatten_cvz * flatten_cut_cvz) / (
-        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) *
         ((sum(flatten_cut_cvz ** 2)) ** (1 / 2)))
 
     return p
@@ -191,14 +191,14 @@ def rotation(rotation_angle):
 
     reverse_array = abs(np.fft.ifft2(spectre_array))
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / 
+    reverse_abs_spectre = abs(reverse_spectre_array /
                               np.exp(phase_array * 1j))
-    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] -
                    abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_rotated_cvz = rotated_cvz.flatten()
     p = sum(flatten_cvz * flatten_rotated_cvz) / (
-        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) *
         ((sum(flatten_rotated_cvz ** 2)) ** (1 / 2)))
 
     return p
@@ -213,20 +213,20 @@ for rotation_param in rotation_param_array:
 def smooth(m):
     window = np.full((m, m), 1) / (m * m)
 
-    smooth_array = convolve2d(reverse_image, window, 
+    smooth_array = convolve2d(reverse_image, window,
                               boundary="symm", mode="same")
     spectre_array = np.fft.fft2(smooth_array)
 
     reverse_array = abs(np.fft.ifft2(spectre_array))
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / 
+    reverse_abs_spectre = abs(reverse_spectre_array /
                               np.exp(phase_array * 1j))
-    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] -
                    abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_smoothed_cvz = rotated_cvz.flatten()
     p = sum(flatten_cvz * flatten_smoothed_cvz) / (
-        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) *
         ((sum(flatten_smoothed_cvz ** 2)) ** (1 / 2)))
 
     return p
@@ -250,14 +250,14 @@ def jpeg(qf):
 
     reverse_array = abs(np.fft.ifft2(spectre_array))
     reverse_spectre_array = np.fft.fft2(reverse_array)
-    reverse_abs_spectre = abs(reverse_spectre_array / 
+    reverse_abs_spectre = abs(reverse_spectre_array /
                               np.exp(phase_array * 1j))
-    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] - 
+    rotated_cvz = (reverse_abs_spectre[128:384, 128:384] -
                    abs_spectre[128:384, 128:384]) / alpha1
     flatten_cvz = CVZ.flatten()
     flatten_jpeg_cvz = rotated_cvz.flatten()
     p = sum(flatten_cvz * flatten_jpeg_cvz) / (
-        ((sum(flatten_cvz ** 2)) ** (1 / 2)) * 
+        ((sum(flatten_cvz ** 2)) ** (1 / 2)) *
         ((sum(flatten_jpeg_cvz ** 2)) ** (1 / 2)))
 
     return p
