@@ -1,14 +1,13 @@
-import os
 import math
-from math import log10, sqrt
+import os
 from cmath import phase
+from math import log10, sqrt
 
-import numpy as np
 import cv2
+import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
 from scipy.signal import convolve2d
-
 
 alpha1 = 1
 CVZ = np.random.normal(0, 1, size=[256, 256])
@@ -18,11 +17,7 @@ def threshold_processing(x: float) -> int:
     """
     Processes the input value with a threshold.
     """
-    if x > 0.1:
-        x = 1
-    else:
-        x = 0
-    return x
+    return 1 if x > 0.1 else 0
 
 
 def psnr(original: np.ndarray, compressed: np.ndarray) -> float:
@@ -43,7 +38,7 @@ def psnr_1(c: np.ndarray, cw: np.ndarray) -> float:
     Calculates the PSNR using a different formula.
     """
     return 10 * np.log10(np.power(255, 2) /
-                         np.mean(np.power((c - cw), 2)))
+                          np.mean(np.power((c - cw), 2)))
 
 
 def auto_selection(image: Image.Image) -> tuple:
@@ -76,7 +71,7 @@ def auto_selection(image: Image.Image) -> tuple:
         reverse_array = save_reverse_array.copy()
         reverse_spectre_array = np.fft.fft2(reverse_array)
         reverse_abs_spectre = abs(reverse_spectre_array /
-                                  np.exp(phase_array * 1j))
+                                   np.exp(phase_array * 1j))
         included_cvz = (reverse_abs_spectre[128:384, 128:384] -
                         abs_spectre[128:384, 128:384]) / alpha
         flatten_cvz = CVZ.flatten()
@@ -188,7 +183,7 @@ def cut(replacement_proportion: float) -> float:
     """
     reverse_array[0:int(replacement_proportion * len(reverse_array)),
                   0:int(replacement_proportion * len(reverse_array))] = (
-        image_array[0:int(replacement_proportion * len(image_array)):,
+        image_array[0:int(replacement_proportion * len(image_array)):, 
                     0:int(replacement_proportion * len(image_array))])
     reverse_spectre_array = np.fft.fft2(reverse_array)
     reverse_abs_spectre = abs(reverse_spectre_array /
