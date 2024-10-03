@@ -14,7 +14,7 @@ alpha1 = 1
 CVZ = np.random.normal(0, 1, size=[256, 256])
 
 
-def threshold_processing(x):
+def threshold_processing(x: float) -> int:
     """
     Processes the input value with a threshold.
     """
@@ -25,20 +25,20 @@ def threshold_processing(x):
     return x
 
 
-def psnr(original, compressed):
+def psnr(original: np.ndarray, compressed: np.ndarray) -> float:
     """
     Calculates the Peak Signal-to-Noise Ratio (PSNR) between 
     the original and compressed images.
     """
     mse = np.mean((original - compressed) ** 2)
     if mse == 0:
-        return 100
+        return 100.0
     max_pixel = 255.0
     psnr_value = 20 * log10(max_pixel / sqrt(mse))
     return psnr_value
 
 
-def psnr_1(c, cw):
+def psnr_1(c: np.ndarray, cw: np.ndarray) -> float:
     """
     Calculates the PSNR using a different formula.
     """
@@ -46,7 +46,7 @@ def psnr_1(c, cw):
                          np.mean(np.power((c - cw), 2)))
 
 
-def auto_selection(image):
+def auto_selection(image: Image.Image) -> tuple:
     """
     Automatically selects the best alpha value for image processing.
     """
@@ -98,7 +98,7 @@ def auto_selection(image):
     return best_alpha, psnr_value, best_p
 
 
-def generate_false_detection_cvz(count):
+def generate_false_detection_cvz(count: int) -> list:
     """
     Generates false detection CVZs.
     """
@@ -108,7 +108,7 @@ def generate_false_detection_cvz(count):
     return false_detection_cvz
 
 
-def proximity_function(first_cvz, second_cvz):
+def proximity_function(first_cvz: np.ndarray, second_cvz: np.ndarray) -> float:
     """
     Calculates the proximity measure between two CVZs.
     """
@@ -117,7 +117,7 @@ def proximity_function(first_cvz, second_cvz):
         ((sum(second_cvz ** 2)) ** (1 / 2)))
 
 
-def false_detection(false_detection_cvz, cvz):
+def false_detection(false_detection_cvz: list, cvz: np.ndarray) -> list:
     """
     Calculates the proximity measures for false detections.
     """
@@ -182,7 +182,7 @@ reverse_image = Image.fromarray(reverse_array)
 print(auto_selection(image))
 
 
-def cut(replacement_proportion):
+def cut(replacement_proportion: float) -> float:
     """
     Replaces a portion of the reverse image with the original image.
     """
@@ -210,7 +210,7 @@ for cut_param in cut_param_array:
     cut_p.append(cut(cut_param))
 
 
-def rotation(rotation_angle):
+def rotation(rotation_angle: float) -> float:
     """
     Rotates the reverse image by a specified angle and calculates the proximity measure.
     """
@@ -239,7 +239,7 @@ for rotation_param in rotation_param_array:
     rotation_p.append(rotation(rotation_param))
 
 
-def smooth(m):
+def smooth(m: int) -> float:
     """
     Applies a smoothing filter to the reverse image and calculates the proximity measure.
     """
@@ -270,7 +270,7 @@ for smooth_param in smooth_param_array:
     smooth_p.append(smooth(smooth_param))
 
 
-def jpeg(qf):
+def jpeg(qf: int) -> float:
     """
     Compresses the reverse image using JPEG compression and calculates the proximity measure.
     """
