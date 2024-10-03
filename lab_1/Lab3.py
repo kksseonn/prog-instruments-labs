@@ -10,6 +10,10 @@ from matplotlib import pyplot as plt
 from scipy.signal import convolve2d
 
 
+alpha1 = 1
+CVZ = np.random.normal(0, 1, size=[256, 256])
+
+
 def threshold_processing(x):
     if x > 0.1:
         x = 1
@@ -101,9 +105,6 @@ def false_detection(false_detection_cvz, cvz):
             proximity_function(cvz, false_cvz))
     return false_detection_proximity_array
 
-
-alpha1 = 1
-CVZ = np.random.normal(0, 1, size=[256, 256])
 
 flatten_CVZ = CVZ.flatten()
 false_detection_cvz = generate_false_detection_cvz(100)
