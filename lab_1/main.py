@@ -1,12 +1,14 @@
+import json
 import os
+
 import numpy as np
 from cmath import phase
 from PIL import Image
-import json
-from visualization import plot_results
+
 from analysis import generate_false_detection_cvz, false_detection
-from processing import threshold_processing, auto_selection, cut, rotation
-from processing import smooth, jpeg, CVZ, alpha1
+from processing import (alpha1, CVZ, cut, jpeg, rotation, 
+                        smooth, threshold_processing, auto_selection)
+from visualization import plot_results
 
 if __name__ == '__main__':
     with open(os.path.join("options.json"), "r") as options_file:
