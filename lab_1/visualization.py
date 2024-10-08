@@ -1,7 +1,9 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-def plot_results(x: np.ndarray, y: np.ndarray, title: str, xlabel: str, ylabel: str, color: str) -> None:
+
+def plot_results(x: np.ndarray, y: np.ndarray, title: str, xlabel: str,
+                 ylabel: str, color: str) -> None:
     """
     Function for visualizing results.
     """

@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def generate_false_detection_cvz(count: int) -> list:
     """
     Generates false detection CVZs.
