@@ -88,7 +88,9 @@ def auto_selection(image: Image.Image) -> tuple:
     return best_alpha, psnr_value, best_p
 
 
-def cut(replacement_proportion: float,reverse_array,image_array,phase_array,abs_spectre) -> float:
+def cut(replacement_proportion: float, reverse_array: np.ndarray,
+        image_array: np.ndarray, phase_array: np.ndarray,
+        abs_spectre: np.ndarray) -> float:
     """
     Replaces a portion of the reverse image with the original image.
     """
@@ -110,7 +112,8 @@ def cut(replacement_proportion: float,reverse_array,image_array,phase_array,abs_
     return p
 
 
-def rotation(rotation_angle: float,reverse_image,phase_array,abs_spectre) -> float:
+def rotation(rotation_angle: float, reverse_image: Image.Image,
+             phase_array: np.ndarray, abs_spectre: np.ndarray) -> float:
     """
     Rotates the reverse image by a specified angle and calculates the
     proximity measure.
@@ -134,7 +137,8 @@ def rotation(rotation_angle: float,reverse_image,phase_array,abs_spectre) -> flo
     return p
 
 
-def smooth(m: int,reverse_image,phase_array,abs_spectre) -> float:
+def smooth(m: int, reverse_image: Image.Image,
+           phase_array: np.ndarray, abs_spectre: np.ndarray) -> float:
     """
     Applies a smoothing filter to the reverse image and calculates
     the proximity measure.
@@ -160,7 +164,8 @@ def smooth(m: int,reverse_image,phase_array,abs_spectre) -> float:
     return p
 
 
-def jpeg(qf: int,reverse_image,phase_array,abs_spectre) -> float:
+def jpeg(qf: int, reverse_image: Image.Image,
+         phase_array: np.ndarray, abs_spectre: np.ndarray) -> float:
     """
     Compresses the reverse image using JPEG compression and calculates
     the proximity measure.
