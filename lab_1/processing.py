@@ -3,7 +3,6 @@ from math import log10, sqrt
 
 import numpy as np
 from PIL import Image
-from matplotlib import pyplot as plt
 from scipy.signal import convolve2d
 
 alpha1 = 1
@@ -89,91 +88,7 @@ def auto_selection(image: Image.Image) -> tuple:
     return best_alpha, psnr_value, best_p
 
 
-def generate_false_detection_cvz(count: int) -> list:
-    """
-    Generates false detection CVZs.
-    """
-    false_detection_cvz = []
-    for i in range(count):
-        false_detection_cvz.append(np.random.normal(0, 1, size=[65536]))
-    return false_detection_cvz
-
-
-def proximity_function(first_cvz: np.ndarray, second_cvz: np.ndarray) -> float:
-    """
-    Calculates the proximity measure between two CVZs.
-    """
-    return sum(first_cvz * second_cvz) / (
-        ((sum(first_cvz ** 2)) ** (1 / 2)) *
-        ((sum(second_cvz ** 2)) ** (1 / 2)))
-
-
-def false_detection(false_detection_cvz: list, cvz: np.ndarray) -> list:
-    """
-    Calculates the proximity measures for false detections.
-    """
-    false_detection_proximity_array = []
-    for false_cvz in false_detection_cvz:
-        false_detection_proximity_array.append(
-            proximity_function(cvz, false_cvz))
-    return false_detection_proximity_array
-
-
-flatten_CVZ = CVZ.flatten()
-false_detection_cvz = generate_false_detection_cvz(100)
-false_detection_proximity_array = false_detection(
-    false_detection_cvz, CVZ.flatten())
-
-x = np.arange(0, 100, 1)
-y = false_detection_proximity_array
-plt.xlabel("X axis")
-plt.ylabel("Y axis")
-plt.plot(x, y, color="red")
-plt.show()
-
-image = Image.open("lab_1/bridge.tif")
-
-image_array = np.asarray(image)
-
-spectre_array = np.fft.fft2(image_array)
-
-get_phase = np.vectorize(phase)
-phase_array = get_phase(spectre_array)
-abs_spectre = abs(spectre_array)
-changed_abs_spectre = abs_spectre
-changed_abs_spectre[128:384, 128:384] += alpha1 * CVZ
-changed_spectre = changed_abs_spectre * np.exp(phase_array * 1j)
-
-reverse_array = abs(np.fft.ifft2(changed_spectre))
-
-reverse_image = Image.fromarray(reverse_array)
-reverse_image.convert("RGB").save("img_with_cvz.png")
-new_image = Image.open("img_with_cvz.png").convert("L")
-reverse_array = np.asarray(new_image)
-
-save_reverse_array = reverse_array
-reverse_array = save_reverse_array.copy()
-reverse_spectre_array = np.fft.fft2(reverse_array)
-reverse_abs_spectre = abs(reverse_spectre_array /
-                          np.exp(phase_array * 1j))
-included_cvz = (reverse_abs_spectre[128:384, 128:384] -
-                abs_spectre[128:384, 128:384]) / alpha1
-flatten_cvz = CVZ.flatten()
-flatten_included_cvz = included_cvz.flatten()
-p = sum(flatten_cvz * flatten_included_cvz) / (
-    ((sum(flatten_cvz ** 2)) ** (1 / 2)) *
-    ((sum(flatten_included_cvz ** 2)) ** (1 / 2)))
-
-included_cvz_estimation = threshold_processing(p)
-print(p)
-print(included_cvz_estimation)
-
-reverse_image = Image.fromarray(reverse_array)
-
-print(auto_selection(image))
-
-
-def cut(replacement_proportion: float) -> float:
+def cut(replacement_proportion: float,reverse_array,image_array,phase_array,abs_spectre) -> float:
     """
     Replaces a portion of the reverse image with the original image.
     """
@@ -195,13 +110,7 @@ def cut(replacement_proportion: float) -> float:
     return p
 
 
-cut_param_array = np.arange(0.55, 1.45, 0.15)
-cut_p = []
-for cut_param in cut_param_array:
-    cut_p.append(cut(cut_param))
-
-
-def rotation(rotation_angle: float) -> float:
+def rotation(rotation_angle: float,reverse_image,phase_array,abs_spectre) -> float:
     """
     Rotates the reverse image by a specified angle and calculates the
     proximity measure.
@@ -225,13 +134,7 @@ def rotation(rotation_angle: float) -> float:
     return p
 
 
-rotation_param_array = np.arange(1, 90, 8.9)
-rotation_p = []
-for rotation_param in rotation_param_array:
-    rotation_p.append(rotation(rotation_param))
-
-
-def smooth(m: int) -> float:
+def smooth(m: int,reverse_image,phase_array,abs_spectre) -> float:
     """
     Applies a smoothing filter to the reverse image and calculates
     the proximity measure.
@@ -257,13 +160,7 @@ def smooth(m: int) -> float:
     return p
 
 
-smooth_param_array = np.arange(3, 15, 2)
-smooth_p = []
-for smooth_param in smooth_param_array:
-    smooth_p.append(smooth(smooth_param))
-
-
-def jpeg(qf: int) -> float:
+def jpeg(qf: int,reverse_image,phase_array,abs_spectre) -> float:
     """
     Compresses the reverse image using JPEG compression and calculates
     the proximity measure.
@@ -290,42 +187,3 @@ def jpeg(qf: int) -> float:
         ((sum(flatten_jpeg_cvz ** 2)) ** (1 / 2)))
 
     return p
-
-
-jpeg_param_array = np.arange(30, 91, 10)
-jpeg_p = []
-for jpeg_param in jpeg_param_array:
-    jpeg_p.append(jpeg(int(jpeg_param)))
-
-
-x = cut_param_array
-y = cut_p
-plt.title("CUT")
-plt.xlabel("X axis")
-plt.ylabel("Y axis")
-plt.plot(x, y, color="red")
-plt.show()
-
-x = rotation_param_array
-y = rotation_p
-plt.title("ROTATION")
-plt.xlabel("X axis")
-plt.ylabel("Y axis")
-plt.plot(x, y, color="red")
-plt.show()
-
-x = smooth_param_array
-y = smooth_p
-plt.title("SMOOTHING PARAMETERS")
-plt.xlabel("Window Size")
-plt.ylabel("Proximity Measure")
-plt.plot(x, y, color="blue")
-plt.show()
-
-x = jpeg_param_array
-y = jpeg_p
-plt.title("JPEG QUALITY FACTOR")
-plt.xlabel("Quality Factor")
-plt.ylabel("Proximity Measure")
-plt.plot(x, y, color="green")
-plt.show()
