@@ -5,6 +5,21 @@ from typing import List
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
 """
+"email";"http_status_message";"inn";"passport";"ip_v4";"latitude";"hex_color";"isbn";"uuid";"time"
+
+patterns = {
+    'email': r'^(?!.*\.\.)(?!.*\.$)(?!^\.)[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@(?!.*\.\.)(?!.*\.$)(?!^\.)[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)+\.[a-zA-Z]{2,}$'
+
+    # 'http_status_message':
+    # 'inn':
+    # 'passport'
+    # 'ip_v4':
+    # 'latitude': 
+    # 'hex_color':
+    # 'isbn':
+    # 'uuid':
+    # 'time':
+}
 
 
 def calculate_checksum(row_numbers: List[int]) -> str:
