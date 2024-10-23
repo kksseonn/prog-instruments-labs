@@ -5,10 +5,19 @@ from typing import List
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
 """
-"telephone";"height";"snils";"identifier";"occupation";"longitude";"blood_type";"issn";"locale_code";"date"
+
 
 patterns = {
-    
+    'telephone': r'^\+7-\(\d{3}\)-\d{3}-\d{2}-\d{2}$',
+    'height': r'^(?:[1-2](?:\.\d{2})?|2\.00)$',
+    'snils': r'^\d{11}$',
+    'identifier': r'^\d{2}-\d{2}/\d{2}$',
+    'occupation': r'^[а-яА-ЯёЁa-zA-Z\s-]+$',
+    'longitude': r'^-?(1[0-7]\d(\.\d+)?|0?\d{1,2}(\.\d+)?)$',
+    'blood_type': r'^(A|B|AB|O)[±−]$',
+    'issn': r'^\d{4}-\d{4}$',
+    'locale_code': r'^[a-z]{2}(-[A-Z]{2})?(,[a-z]{2}(-[A-Z]{2})?)*$',
+    'date': r'^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$'
 }
 
 
