@@ -8,12 +8,12 @@ from typing import List
 "email";"http_status_message";"inn";"passport";"ip_v4";"latitude";"hex_color";"isbn";"uuid";"time"
 
 patterns = {
-    'email': r'^(?!.*\.\.)(?!.*\.$)(?!^\.)[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@(?!.*\.\.)(?!.*\.$)(?!^\.)[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)+\.[a-zA-Z]{2,}$'
+    'email': r'^(?!.*\.\.)(?!.*\.$)(?!^\.)[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@(?!.*\.\.)(?!.*\.$)(?!^\.)[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)+\.[a-zA-Z]{2,}$',
+    'http_status_message': r'^\d{3} [A-Za-z]+( [A-Za-z]+)*$',
+    'inn': r'^\d{12}$',
+    'passport': r'^\d{2} \d{2} \d{6}$',
+    'ip_v4': r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
 
-    # 'http_status_message':
-    # 'inn':
-    # 'passport'
-    # 'ip_v4':
     # 'latitude': 
     # 'hex_color':
     # 'isbn':
